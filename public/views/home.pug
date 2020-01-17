@@ -1,0 +1,34 @@
+extends _layout
+ 
+block variables
+  - var title = 'Restauranter - Eat Now'
+ 
+block content
+  h2.text-center #{title}
+ 
+  .row
+    .col-lg-3
+      div(role="tablist" id="list-tab").list-group.restaurants
+        each restaurant, i in restaurants
+          - href = '#r' + restaurant.id
+          - controls = 'r' + restaurant.id
+          - id = 'list-' + restaurant.id + '-list'
+          a.list-group-item.list-group-item-action(data-toggle='list', href=href, role='tab' aria-controls=controls, id=id) #{restaurant.name}
+    .col-lg-9
+      .tab-content(id='nav-tabContent')
+        each restaurant, i in restaurants
+          - id = 'r' + restaurant.id
+          - labeledBy = 'list-' + restaurant.id + '-list'
+          .tab-pane.fade(id=id, role='tabpanel' aria-labelledby=labeledBy)
+            .row
+              each item, j in restaurant.menu
+                .col-lg-2 
+                  span #{item.name}
+                .col-lg-6
+                  span #{item.description}
+                .col-lg-2
+                  span #{item.price}
+                .col-lg-2
+                  - func = 'addToCart(' + item.restaurantId + ',' + item.itemId + ')';
+                  button(onClick = func) Add To Cart
+  script(src="..\\js\\utils.js")

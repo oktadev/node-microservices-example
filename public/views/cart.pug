@@ -1,0 +1,36 @@
+extends _layout
+ 
+block variables
+  - var title = 'Restauranter - Eat Now'
+ 
+block content
+  h2.p-2 Cart
+  if cart.items.length == 0
+    p Your cart is empty. Please check out our 
+      a(href="/") menus.
+  else
+    table.table.table-striped
+      thead
+        tr
+          th Restaurant
+          th Item
+          th Price
+          th Remove
+      tbody
+      each item, i in cart.items
+        - c = 'row-' + i;
+        tr(id=c)
+          td #{ item.restaurantName }
+          td #{ item.itemName }
+          td #{ item.itemPrice }
+          td
+            - removeFunc = 'removeFromCart(' + item.restaurantId + ',' + item.itemId + ',' + i + ')' 
+            a.fa.fa-trash-alt(href="#", onClick = removeFunc) 
+      tfoot
+        tr
+          td(colspan="3")
+            span.float-right(id='total-price') Total Price $ #{cart.total}
+          td
+            form(action="order", method="post")
+              button.btn.btn-primary Order
+  script(src="..\\js\\utils.js")
