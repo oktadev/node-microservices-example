@@ -15,14 +15,8 @@ function removeFromCart(restaurantId, itemId, rowNumber) {
     data: data,
     success: function(cart) {
       updateCart(cart);
-
       $('#row-' + rowNumber).remove();
-      var total = 0.0;
-      for (var i = 0; i < cart.items.length; i++) {
-        total += +cart.items[i].price;
-      }
-
-      $('#total-price').text('Total Price $ ' + total.toFixed(2));
+      $('#total-price').text('Total Price $ ' + cart.total.toFixed(2));
     }
   });
 }

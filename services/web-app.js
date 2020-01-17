@@ -10,12 +10,6 @@ var ExpressOIDC = require('@okta/oidc-middleware').ExpressOIDC;
 var path = require('path');
 var bodyparser = require('body-parser');
 
-var senecaWebConfig = {
-  context: Express(),
-  adapter: require('seneca-web-adapter-express'),
-  options: { parseBody: false, includeRequest: true, includeResponse: true }
-};
-
 const oktaSettings = {
   clientId: process.env.OKTA_CLIENT_ID,
   clientSecret: process.env.OKTA_CLIENT_SECRET,
@@ -23,22 +17,11 @@ const oktaSettings = {
   appBaseUrl: process.env.OKTA_APP_BASE_URL
 };
 
-const oidc = new ExpressOIDC({
-  issuer: oktaSettings.url + '/oauth2/default',
-  client_id: oktaSettings.clientId,
-  client_secret: oktaSettings.clientSecret,
-  appBaseUrl: oktaSettings.appBaseUrl,
-  scope: 'openid profile',
-  routes: {
-    login: {
-      path: '/users/login'
-    },
-    callback: {
-      path: '/authorization-code/callback',
-      defaultRedirect: '/'
-    }
-  }
-});
+var senecaWebConfig = {
+  context: Express(),
+  adapter: require('seneca-web-adapter-express'),
+  options: { parseBody: false, includeRequest: true, includeResponse: true }
+};
 
 seneca
   .use(Web, senecaWebConfig)
@@ -56,6 +39,23 @@ seneca.ready(() => {
 
   app.set('views', path.join(__dirname, '../public/views'));
   app.set('view engine', 'pug');
+
+  const oidc = new ExpressOIDC({
+    issuer: oktaSettings.url + '/oauth2/default',
+    client_id: oktaSettings.clientId,
+    client_secret: oktaSettings.clientSecret,
+    appBaseUrl: oktaSettings.appBaseUrl,
+    scope: 'openid profile',
+    routes: {
+      login: {
+        path: '/users/login'
+      },
+      callback: {
+        path: '/authorization-code/callback',
+        defaultRedirect: '/'
+      }
+    }
+  });
 
   app.use(
     session({
@@ -98,7 +98,12 @@ seneca.ready(() => {
   
   app.get('/login', function (request, response) {
     return response.render('login')
-  })
+  });
+
+  app.get("/users/logout", (request, response, next) => {
+    request.logout();
+    response.redirect("/");
+  });
   
   app.get('/cart', ensureAuthenticated, function (request, response) {
   
@@ -130,7 +135,9 @@ seneca.ready(() => {
             userId: username,
             restaurantName: val.restaurant.name,
             itemName: val.item.name,
-            itemPrice: val.item.price
+            itemPrice: val.item.price,
+            itemId: val.item.itemId,
+            restaurantId: val.item.restaurantId
           }, function (err, msg) {
             return response.send(msg).statusCode(200)
           });
@@ -159,7 +166,7 @@ seneca.ready(() => {
       total = msg.total
     });
   
-    seneca.act('role: payment', { cmd: 'billCard', total: total }, function (err, msg) {
+    seneca.act('role: payment', { cmd: 'pay', total: total }, function (err, msg) {
       result = msg;
     }).ready(function () {
       if (result.success) {

@@ -5,7 +5,7 @@ block variables
  
 block content
   h2.p-2 Cart
-  if cart.items.length == 0
+  if cart.items.length === 0
     p Your cart is empty. Please check out our 
       a(href="/") menus.
   else
@@ -29,7 +29,7 @@ block content
       tfoot
         tr
           td(colspan="3")
-            span.float-right(id='total-price') Total Price $ #{cart.total}
+            span.float-right(id='total-price') Total Price $ #{cart.total.toFixed(2)}
           td
             form(action="order", method="post")
               button.btn.btn-primary Order
