@@ -19,7 +19,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.11.2",
     "express-session": "^1.17.0",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "seneca": "^3.17.0",
     "seneca-web": "^2.2.1",
     "seneca-web-adapter-express": "^1.2.0"
