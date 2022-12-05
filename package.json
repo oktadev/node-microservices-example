@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@okta/oidc-middleware": "^2.0.0",
+    "@okta/oidc-middleware": "^5.0.0",
     "@okta/okta-sdk-nodejs": "^3.1.0",
     "body-parser": "^1.11.0",
     "dotenv": "^8.2.0",
