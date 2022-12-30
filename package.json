@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@okta/oidc-middleware": "^2.0.0",
-    "@okta/okta-sdk-nodejs": "^3.1.0",
+    "@okta/okta-sdk-nodejs": "^3.3.2",
     "body-parser": "^1.11.0",
     "dotenv": "^8.2.0",
     "express": "^4.11.2",
